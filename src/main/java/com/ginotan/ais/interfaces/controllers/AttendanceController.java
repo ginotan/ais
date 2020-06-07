@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class AttendanceController {
 
   @RequestMapping(value = "/{id}/{date}", method = RequestMethod.GET)
-  public void getAttendance(
+  public void getMonthlyAttendance(
       @PathVariable String id,
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {}
 }
