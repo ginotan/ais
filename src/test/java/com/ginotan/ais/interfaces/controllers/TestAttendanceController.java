@@ -23,7 +23,7 @@ public class TestAttendanceController {
   @Test
   void getMonthlyAttendanceTest() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/v1/attendance/N99999/2020-06-07"))
+        .perform(MockMvcRequestBuilders.get("/v1/attendance/N99999/2020-06"))
         .andExpect(status().is(200));
   }
 }
