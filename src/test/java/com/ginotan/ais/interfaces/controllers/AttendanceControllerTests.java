@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig
-public class TestAttendanceController {
+public class AttendanceControllerTests {
 
   MockMvc mockMvc;
 
