@@ -1,9 +1,19 @@
 package com.ginotan.ais.usecases;
 
+import com.ginotan.ais.entities.Attendance;
+import com.ginotan.ais.entities.AttendanceRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
-public class AttendanceUseCase {
+import java.time.LocalDate;
+import java.util.List;
 
-  public void getMonthlyAttendance(String id, String month) {}
+@Service
+@RequiredArgsConstructor
+public class AttendanceUseCase {
+  private final AttendanceRepository attendanceRepository;
+
+  public List<Attendance> getMonthlyAttendance(String userId, LocalDate monthDate) {
+    return attendanceRepository.findMonth(userId, monthDate);
+  }
 }
