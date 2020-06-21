@@ -40,21 +40,21 @@ public class AttendanceUseCaseTests {
     attendance1 =
         Attendance.builder()
             .userId(USER_ID)
-            .date(DAY1)
+            .attendanceDate(DAY1)
             .startTime(START_TIME)
             .endTime(END_TIME)
             .build();
     attendance2 =
         Attendance.builder()
             .userId(USER_ID)
-            .date(DAY2)
+            .attendanceDate(DAY2)
             .startTime(START_TIME)
             .endTime(END_TIME)
             .build();
     attendance3 =
         Attendance.builder()
             .userId(USER_ID)
-            .date(DAY3)
+            .attendanceDate(DAY3)
             .startTime(START_TIME)
             .endTime(END_TIME)
             .build();

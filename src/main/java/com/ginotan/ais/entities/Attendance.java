@@ -8,7 +8,7 @@ import java.time.LocalTime;
 @Builder
 public class Attendance {
   private String userId;
-  private LocalDate date;
+  private LocalDate attendanceDate;
   private LocalTime startTime;
   private LocalTime endTime;
 }
