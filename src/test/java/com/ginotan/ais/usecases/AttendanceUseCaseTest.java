@@ -74,4 +74,14 @@ public class AttendanceUseCaseTest {
     assertThat(actual.get(1)).isEqualTo(attendance2);
     assertThat(actual.get(2)).isEqualTo(attendance3);
   }
+
+  @Test
+  void addAttendanceTest() {
+    when(attendanceRepository.save(attendance1)).thenReturn(attendance1);
+
+    Attendance adtual = attendanceUseCase.addAttendance(attendance1);
+
+    verify(attendanceRepository, times(1)).save(attendance1);
+    assertThat(adtual).isEqualTo(attendance1);
+  }
 }

@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface AttendanceRepository {
   List<Attendance> findMonth(String userId, LocalDate monthDate);
+
+  Attendance save(Attendance attendance);
 }

@@ -27,4 +27,9 @@ public class AttendanceRepositoryImp implements AttendanceRepository {
                 monthDate.with(TemporalAdjusters.lastDayOfMonth()));
     return attendances.stream().map(AttendanceEntity::toDomainModel).collect(Collectors.toList());
   }
+
+  @Override
+  public Attendance save(Attendance attendance) {
+    return null;
+  }
 }

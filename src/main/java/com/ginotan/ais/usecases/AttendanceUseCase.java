@@ -16,4 +16,8 @@ public class AttendanceUseCase {
   public List<Attendance> getMonthlyAttendance(String userId, LocalDate monthDate) {
     return attendanceRepository.findMonth(userId, monthDate);
   }
+
+  public Attendance addAttendance(Attendance attendance) {
+    return attendanceRepository.save(attendance);
+  }
 }
