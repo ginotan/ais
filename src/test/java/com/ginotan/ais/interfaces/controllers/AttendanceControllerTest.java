@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig
-public class AttendanceControllerTests {
+public class AttendanceControllerTest {
 
   private static final String USER_ID = "N99999";
   private static final LocalDate MONTH_DATE = LocalDate.of(2020, 6, 1);

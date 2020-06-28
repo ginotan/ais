@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringJUnitWebConfig
-class AttendanceRepositoryImpTests {
+class AttendanceRepositoryImpTest {
 
   private static final String USER_ID = "N99999";
   private static final LocalDate MONTH_DATE = LocalDate.of(2020, 6, 1);

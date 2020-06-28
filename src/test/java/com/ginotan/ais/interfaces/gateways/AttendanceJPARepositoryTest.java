@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitWebConfig
 @DataJpaTest
-public class AttendanceJPARepositoryTests {
+public class AttendanceJPARepositoryTest {
 
   private static final String USER_ID_1 = "N99999";
   private static final String USER_ID_2 = "N99998";
