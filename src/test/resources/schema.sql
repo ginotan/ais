@@ -1,4 +1,4 @@
-CREATE TABLE attendances (
+CREATE TABLE IF NOT EXISTS attendances (
     user_id CHAR(6) NOT NULL,
     attendance_date DATE NOT NULL,
     start_time TIME,
