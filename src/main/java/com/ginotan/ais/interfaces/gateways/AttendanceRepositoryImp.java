@@ -30,6 +30,8 @@ public class AttendanceRepositoryImp implements AttendanceRepository {
 
   @Override
   public Attendance save(Attendance attendance) {
-    return null;
+    return attendanceJPARepository
+        .save(AttendanceEntity.fromDomainModel(attendance))
+        .toDomainModel();
   }
 }

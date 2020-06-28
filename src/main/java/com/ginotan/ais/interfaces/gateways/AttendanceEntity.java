@@ -24,6 +24,18 @@ public class AttendanceEntity {
   @Column(name = "end_time")
   private LocalTime endTime;
 
+  public static AttendanceEntity fromDomainModel(Attendance attendance) {
+    return AttendanceEntity.builder()
+        .attendanceEntityKey(
+            AttendanceEntityKey.builder()
+                .userId(attendance.getUserId())
+                .attendanceDate(attendance.getAttendanceDate())
+                .build())
+        .startTime(attendance.getStartTime())
+        .endTime(attendance.getEndTime())
+        .build();
+  }
+
   public Attendance toDomainModel() {
     return Attendance.builder()
         .userId(attendanceEntityKey.getUserId())

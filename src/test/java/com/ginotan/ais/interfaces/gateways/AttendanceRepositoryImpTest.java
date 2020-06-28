@@ -26,6 +26,8 @@ class AttendanceRepositoryImpTest {
   private static final LocalTime START_TIME = LocalTime.of(10, 0);
   private static final LocalTime END_TIME = LocalTime.of(18, 0);
 
+  private Attendance attendance;
+
   private List<AttendanceEntity> attendanceEntities = new ArrayList<>();
   private AttendanceEntity attendanceEntity1;
   private AttendanceEntity attendanceEntity2;
@@ -35,6 +37,14 @@ class AttendanceRepositoryImpTest {
 
   @BeforeEach
   void setup() {
+    attendance =
+        Attendance.builder()
+            .userId(USER_ID)
+            .attendanceDate(DAY1)
+            .startTime(START_TIME)
+            .endTime(END_TIME)
+            .build();
+
     attendanceEntity1 =
         AttendanceEntity.builder()
             .attendanceEntityKey(
@@ -76,5 +86,19 @@ class AttendanceRepositoryImpTest {
     assertThat(actual).extracting("attendanceDate").containsExactly(DAY1, DAY2);
     assertThat(actual).extracting("startTime").containsExactly(START_TIME, START_TIME);
     assertThat(actual).extracting("endTime").containsExactly(END_TIME, END_TIME);
+  }
+
+  @Test
+  void save() {
+    when(attendanceJPARepository.save(AttendanceEntity.fromDomainModel(attendance)))
+        .thenReturn(attendanceEntity1);
+
+    Attendance actual = attendanceRepositoryImp.save(attendance);
+
+    verify(attendanceJPARepository, times(1)).save(AttendanceEntity.fromDomainModel(attendance));
+    assertThat(actual.getUserId()).isEqualTo(USER_ID);
+    assertThat(actual.getAttendanceDate()).isEqualTo(DAY1);
+    assertThat(actual.getStartTime()).isEqualTo(START_TIME);
+    assertThat(actual.getEndTime()).isEqualTo(END_TIME);
   }
 }
