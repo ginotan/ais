@@ -1,8 +1,10 @@
 package com.ginotan.ais.interfaces.gateways;
 
 import com.ginotan.ais.entities.Attendance;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -11,6 +13,8 @@ import javax.persistence.Table;
 import java.time.LocalTime;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
 @Table(name = "attendances")

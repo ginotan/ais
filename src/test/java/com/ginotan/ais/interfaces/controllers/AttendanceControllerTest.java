@@ -1,11 +1,15 @@
 package com.ginotan.ais.interfaces.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ginotan.ais.entities.Attendance;
 import com.ginotan.ais.usecases.AttendanceUseCase;
+import lombok.Builder;
+import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -17,6 +21,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,9 +40,20 @@ public class AttendanceControllerTest {
   private Attendance attendance1;
   private Attendance attendance2;
 
+  private AddAttendanceRequest addAttendanceRequest;
+
   @Mock private AttendanceUseCase attendanceUseCase;
   @InjectMocks private AttendanceController attendanceController;
   private MockMvc mockMvc;
+
+  @Data
+  @Builder
+  private static class AddAttendanceTestRequest {
+    private String userId;
+    private String attendanceDate;
+    private String startTime;
+    private String endTime;
+  }
 
   @BeforeEach
   void setup() {
@@ -57,6 +73,14 @@ public class AttendanceControllerTest {
             .build();
     attendances.add(attendance1);
     attendances.add(attendance2);
+
+    addAttendanceRequest =
+        AddAttendanceRequest.builder()
+            .userId(USER_ID)
+            .attendanceDate(DAY1)
+            .startTime(START_TIME)
+            .endTime(END_TIME)
+            .build();
 
     mockMvc = MockMvcBuilders.standaloneSetup(attendanceController).alwaysDo(log()).build();
   }
@@ -85,5 +109,27 @@ public class AttendanceControllerTest {
         .andExpect(jsonPath("[1].endTime[1]").value(0));
 
     verify(attendanceUseCase, times(1)).getMonthlyAttendance(USER_ID, MONTH_DATE);
+  }
+
+  @Test
+  void addAttendance() throws Exception {
+    when(attendanceUseCase.addAttendance(any(Attendance.class))).thenReturn(attendance1);
+
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder()
+                .userId(USER_ID)
+                .attendanceDate("2020-06-01")
+                .startTime("10:00")
+                .endTime("18:00")
+                .build());
+
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    verify(attendanceUseCase, times(1)).addAttendance(any(Attendance.class));
   }
 }
