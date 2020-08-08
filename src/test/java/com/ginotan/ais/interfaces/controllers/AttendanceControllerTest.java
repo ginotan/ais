@@ -30,17 +30,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AttendanceControllerTest {
 
   private static final String USER_ID = "N99999";
-  private static final LocalDate MONTH_DATE = LocalDate.of(2020, 6, 1);
-  private static final LocalDate DAY1 = LocalDate.of(2020, 6, 1);
-  private static final LocalDate DAY2 = LocalDate.of(2020, 6, 2);
-  private static final LocalTime START_TIME = LocalTime.of(10, 0);
-  private static final LocalTime END_TIME = LocalTime.of(18, 0);
+  private static final LocalDate MONTH_DATE_LOCAL_DATE = LocalDate.of(2020, 6, 1);
+  private static final LocalDate DAY1_LOCAL_DATE = LocalDate.of(2020, 6, 1);
+  private static final LocalDate DAY2_LOCAL_DATE = LocalDate.of(2020, 6, 2);
+  private static final LocalTime START_TIME_LOCAL_TIME = LocalTime.of(10, 0);
+  private static final LocalTime END_TIME_LOCAL_TIME = LocalTime.of(18, 0);
 
   private List<Attendance> attendances = new ArrayList<>();
   private Attendance attendance1;
   private Attendance attendance2;
-
-  private AddAttendanceRequest addAttendanceRequest;
 
   @Mock private AttendanceUseCase attendanceUseCase;
   @InjectMocks private AttendanceController attendanceController;
@@ -60,34 +58,145 @@ public class AttendanceControllerTest {
     attendance1 =
         Attendance.builder()
             .userId(USER_ID)
-            .attendanceDate(DAY1)
-            .startTime(START_TIME)
-            .endTime(END_TIME)
+            .attendanceDate(DAY1_LOCAL_DATE)
+            .startTime(START_TIME_LOCAL_TIME)
+            .endTime(END_TIME_LOCAL_TIME)
             .build();
     attendance2 =
         Attendance.builder()
             .userId(USER_ID)
-            .attendanceDate(DAY2)
-            .startTime(START_TIME)
-            .endTime(END_TIME)
+            .attendanceDate(DAY2_LOCAL_DATE)
+            .startTime(START_TIME_LOCAL_TIME)
+            .endTime(END_TIME_LOCAL_TIME)
             .build();
     attendances.add(attendance1);
     attendances.add(attendance2);
 
-    addAttendanceRequest =
-        AddAttendanceRequest.builder()
-            .userId(USER_ID)
-            .attendanceDate(DAY1)
-            .startTime(START_TIME)
-            .endTime(END_TIME)
-            .build();
-
     mockMvc = MockMvcBuilders.standaloneSetup(attendanceController).alwaysDo(log()).build();
+  }
+
+  /** addAttendanceの正常系テスト */
+  @Test
+  void addAttendanceTest() throws Exception {
+    // InputDateの準備
+    final String USER_ID = "N12345";
+    final String MONTH_DATE = "2020-06-01";
+    final String START_TIME = "10:00";
+    final String END_TIME = "18:00";
+
+    ObjectMapper mapper = new ObjectMapper();
+    final String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder()
+                .userId(USER_ID)
+                .attendanceDate(MONTH_DATE)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .build());
+
+    // mockの準備
+    when(attendanceUseCase.addAttendance(any(Attendance.class))).thenReturn(attendance1);
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    verify(attendanceUseCase, times(1)).addAttendance(any(Attendance.class));
+  }
+
+  /** addAttendanceのバリデーションチェック userIdがNULL */
+  @Test
+  void addAttendanceTest_userIdValidation1() throws Exception {
+    // InputDate
+    final String MONTH_DATE = "2020-06-01";
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder().attendanceDate(MONTH_DATE).build());
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  /** addAttendanceのバリデーションチェック userIdが不可視文字 */
+  @Test
+  void addAttendanceTest_userIdValidation2() throws Exception {
+    // InputDate
+    final String USER_ID = "      ";
+    final String MONTH_DATE = "2020-06-01";
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder().userId(USER_ID).attendanceDate(MONTH_DATE).build());
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  /** addAttendanceのバリデーションチェック userId桁あふれ */
+  @Test
+  void addAttendanceTest_userIdValidation3() throws Exception {
+    // InputDate
+    final String USER_ID = "N123456";
+    final String MONTH_DATE = "2020-06-01";
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder().userId(USER_ID).attendanceDate(MONTH_DATE).build());
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  /** addAttendanceのバリデーションチェック attendanceDateがNULL */
+  @Test
+  void addAttendanceTest_attendanceDateValidation1() throws Exception {
+    // InputDate
+    final String USER_ID = "N12345";
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(AddAttendanceTestRequest.builder().userId(USER_ID).build());
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  /** addAttendanceのバリデーションチェック attendanceDateが想定外データ */
+  @Test
+  void addAttendanceTest_attendanceDateValidation2() throws Exception {
+    // InputDate
+    final String USER_ID = "N12345";
+    final String MONTH_DATE = "20200601";
+    ObjectMapper mapper = new ObjectMapper();
+    String requestJson =
+        mapper.writeValueAsString(
+            AddAttendanceTestRequest.builder().userId(USER_ID).attendanceDate(MONTH_DATE).build());
+
+    // 検証
+    mockMvc
+        .perform(
+            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   void getMonthlyAttendanceTest() throws Exception {
-    when(attendanceUseCase.getMonthlyAttendance(USER_ID, MONTH_DATE)).thenReturn(attendances);
+    when(attendanceUseCase.getMonthlyAttendance(USER_ID, MONTH_DATE_LOCAL_DATE))
+        .thenReturn(attendances);
     mockMvc
         .perform(get("/v1/attendance/N99999/2020-06-01"))
         .andExpect(status().is(200))
@@ -108,28 +217,6 @@ public class AttendanceControllerTest {
         .andExpect(jsonPath("[1].endTime[0]").value(18))
         .andExpect(jsonPath("[1].endTime[1]").value(0));
 
-    verify(attendanceUseCase, times(1)).getMonthlyAttendance(USER_ID, MONTH_DATE);
-  }
-
-  @Test
-  void addAttendance() throws Exception {
-    when(attendanceUseCase.addAttendance(any(Attendance.class))).thenReturn(attendance1);
-
-    ObjectMapper mapper = new ObjectMapper();
-    String requestJson =
-        mapper.writeValueAsString(
-            AddAttendanceTestRequest.builder()
-                .userId(USER_ID)
-                .attendanceDate("2020-06-01")
-                .startTime("10:00")
-                .endTime("18:00")
-                .build());
-
-    mockMvc
-        .perform(
-            post("/v1/attendance").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
-
-    verify(attendanceUseCase, times(1)).addAttendance(any(Attendance.class));
+    verify(attendanceUseCase, times(1)).getMonthlyAttendance(USER_ID, MONTH_DATE_LOCAL_DATE);
   }
 }
