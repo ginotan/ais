@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalTime;
 
+/** AttendanceのEntityクラス */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +29,12 @@ public class AttendanceEntity {
   @Column(name = "end_time")
   private LocalTime endTime;
 
+  /**
+   * DomainクラスからEntityクラスへの変換
+   *
+   * @param attendance Attendanceのドメインクラス
+   * @return 変換後のEntityクラス
+   */
   public static AttendanceEntity fromDomainModel(Attendance attendance) {
     return AttendanceEntity.builder()
         .attendanceEntityKey(
@@ -40,6 +47,11 @@ public class AttendanceEntity {
         .build();
   }
 
+  /**
+   * EntityクラスからDomainクラスへの変換
+   *
+   * @return 変換後のDomainクラス
+   */
   public Attendance toDomainModel() {
     return Attendance.builder()
         .userId(attendanceEntityKey.getUserId())

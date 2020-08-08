@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/** Attendanceへの登録対象データを受けるクラス */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -19,6 +20,11 @@ public class AddAttendanceRequest {
   private LocalTime startTime;
   private LocalTime endTime;
 
+  /**
+   * 登録対象データをDomainクラスへ変換する
+   *
+   * @return AttendanceのDomainクラス
+   */
   public Attendance toDomainModel() {
     return Attendance.builder()
         .userId(userId)

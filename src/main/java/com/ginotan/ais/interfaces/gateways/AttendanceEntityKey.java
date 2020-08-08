@@ -10,6 +10,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/** Attendanceの複合主キーを表現するためのクラス */
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor

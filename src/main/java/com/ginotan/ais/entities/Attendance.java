@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/** AttendanceのDomainクラス */
 @Getter
 @Builder
 public class Attendance {

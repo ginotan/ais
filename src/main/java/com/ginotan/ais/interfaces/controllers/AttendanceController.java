@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
+/** Attendanceを操作するためのController */
 @RestController
 @RequestMapping("/v1/attendance")
 public class AttendanceController {
 
   @Autowired AttendanceUseCase attendanceUseCase;
 
+  /** Attendanceを登録する */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public Attendance addAttendance(
@@ -31,7 +33,7 @@ public class AttendanceController {
   }
 
   /**
-   * ユーザに紐づく月の出勤情報を取得する
+   * ユーザに紐づく月のAttendanceを取得する
    *
    * @param id ユーザID（半角英数6桁）
    * @param monthDate 対象月（YYYY-MM-DD形式）
